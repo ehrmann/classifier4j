@@ -1,0 +1,26 @@
+<project name="status classifier" default="war" basedir=".">
+
+	<target name="compile">
+		<mkdir dir="build"/>
+		<javac srcdir="src" destdir="build" debug="true" target="1.6" source="1.6">
+			<classpath>
+				<fileset dir="lib" />
+				<fileset dir="dist" />
+			</classpath>
+		</javac>
+	</target>
+
+	<target name="war" depends="compile">
+		<war webxml="web.xml" destfile="ROOT.war">
+			<zipfileset prefix="WEB-INF/classes" dir="build" includes="**/*.class" />
+			<zipfileset prefix="WEB-INF/classes" dir="src" includes="**/defaultStopWords.txt,**/*.java" />
+			<zipfileset prefix="WEB-INF/lib" dir="lib" includes="**/*.jar" />
+			<zipfileset prefix="" dir="." includes="*.htm,*.html" />
+		</war>
+	</target>
+
+	<target name="clean" description="clean up" >
+		<delete dir="build"/>
+		<delete file="ROOT.war"/>
+	</target>
+</project>
