@@ -59,7 +59,7 @@ import net.sf.classifier4J.util.ToStringBuilder;
 /** 
  * @author Peter Leschev
  */
-public class DefaultTokenizer implements ITokenizer<String> {
+public class SimpleStringTokenizer implements ITokenizer<String, String> {
 
     /**
      * Use a the "\W" (non-word characters) regexp to split the string passed to classify
@@ -77,15 +77,15 @@ public class DefaultTokenizer implements ITokenizer<String> {
     /**
      * Constructor that using the BREAK_ON_WORD_BREAKS tokenizer config by default
      */
-    public DefaultTokenizer() {
+    public SimpleStringTokenizer() {
         this(BREAK_ON_WORD_BREAKS);
     }
 
-    public DefaultTokenizer(int tokenizerConfig) {
+    public SimpleStringTokenizer(int tokenizerConfig) {
         setTokenizerConfig(tokenizerConfig);
     }
 
-    public DefaultTokenizer(String regularExpression) {
+    public SimpleStringTokenizer(String regularExpression) {
         setCustomTokenizerRegExp(regularExpression);
     }
 

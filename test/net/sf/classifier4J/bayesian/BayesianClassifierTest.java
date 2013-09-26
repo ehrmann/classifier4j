@@ -56,7 +56,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import net.sf.classifier4J.DefaultStopWordsProvider;
-import net.sf.classifier4J.DefaultTokenizer;
+import net.sf.classifier4J.SimpleStringTokenizer;
 import net.sf.classifier4J.IClassifier;
 import net.sf.classifier4J.IStopWordProvider;
 import net.sf.classifier4J.ITokenizer;
@@ -70,7 +70,7 @@ import org.junit.Test;
 public class BayesianClassifierTest {
 
 	protected final SimpleWordsDataSource<String, Integer> wds = new SimpleWordsDataSource<String, Integer>();
-	protected final ITokenizer<String> tokenizer = new DefaultTokenizer();
+	protected final ITokenizer<String> tokenizer = new SimpleStringTokenizer();
 	protected final IStopWordProvider<String> stopWordProvider = new DefaultStopWordsProvider();
 	protected final BayesianClassifier<Integer,String> classifier = new BayesianClassifier<Integer,String>(wds, tokenizer, stopWordProvider);
 

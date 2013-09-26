@@ -66,21 +66,21 @@ public class DefaultTokenizerTest {
 	public void testConstructors() {
 
 		try {
-			new DefaultTokenizer(null);
+			new SimpleStringTokenizer(null);
 			fail("Shouldn't be able to set a tokenizer of null");
 		}
 		catch(IllegalArgumentException e) {
 			assertTrue(true);
 		}
 
-		new DefaultTokenizer("");
+		new SimpleStringTokenizer("");
 
-		new DefaultTokenizer(DefaultTokenizer.BREAK_ON_WHITESPACE);
+		new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WHITESPACE);
 
-		new DefaultTokenizer(DefaultTokenizer.BREAK_ON_WORD_BREAKS);
+		new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WORD_BREAKS);
 
 		try {
-			new DefaultTokenizer(43);
+			new SimpleStringTokenizer(43);
 			fail("Shouldn't be able to set a tokenizer of type 43");
 		}
 		catch(IllegalArgumentException e) {
@@ -94,7 +94,7 @@ public class DefaultTokenizerTest {
 		ITokenizer<String> tok = null;
 		String words[] = null;
 
-		tok = new DefaultTokenizer(DefaultTokenizer.BREAK_ON_WHITESPACE);
+		tok = new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WHITESPACE);
 		words = tok.tokenize("My very,new string!");
 
 		assertEquals(3, words.length);
@@ -102,7 +102,7 @@ public class DefaultTokenizerTest {
 		assertEquals("very,new", words[1]);
 		assertEquals("string!",  words[2]);
 
-		tok = new DefaultTokenizer(DefaultTokenizer.BREAK_ON_WORD_BREAKS);
+		tok = new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WORD_BREAKS);
 		words = tok.tokenize("My very,new-string!and/more(NIO)peter's 1.4");
 
 		assertEquals(11, words.length);
@@ -126,7 +126,7 @@ public class DefaultTokenizerTest {
 	@Test
 	public void testTokenize2() {
 
-		ITokenizer<String> tok = new DefaultTokenizer(DefaultTokenizer.BREAK_ON_WORD_BREAKS);
+		ITokenizer<String> tok = new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WORD_BREAKS);
 		
 		String[] lol_tests = new String[] {
 				"Lol on point south park...on point.",

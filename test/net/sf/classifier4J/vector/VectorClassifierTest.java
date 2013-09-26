@@ -11,7 +11,7 @@ import java.util.Iterator;
 
 import net.sf.classifier4J.ClassifierException;
 import net.sf.classifier4J.DefaultStopWordsProvider;
-import net.sf.classifier4J.DefaultTokenizer;
+import net.sf.classifier4J.SimpleStringTokenizer;
 
 import org.junit.Test;
 
@@ -26,7 +26,7 @@ public class VectorClassifierTest {
 	@Test
 	public void testClassifyStringString() throws ClassifierException {
 		TermVectorStorage<Integer, String> storage = new HashMapTermVectorStorage<Integer,String>();
-		VectorClassifier<Integer, String> vc = new VectorClassifier<Integer, String>(storage, new DefaultTokenizer(), new DefaultStopWordsProvider());
+		VectorClassifier<Integer, String> vc = new VectorClassifier<Integer, String>(storage, new SimpleStringTokenizer(), new DefaultStopWordsProvider());
 
 		Integer category = 0xCA71;
 		vc.teachMatch(category, sentence1);
@@ -43,7 +43,7 @@ public class VectorClassifierTest {
 	@Test
 	public void testIsMatchStringString() throws ClassifierException {
 		TermVectorStorage<String, String> storage = new HashMapTermVectorStorage<String, String>();
-		VectorClassifier<String, String> vc = new VectorClassifier<String, String>(storage, new DefaultTokenizer(), new DefaultStopWordsProvider());
+		VectorClassifier<String, String> vc = new VectorClassifier<String, String>(storage, new SimpleStringTokenizer(), new DefaultStopWordsProvider());
 
 		String category = "test";
 		vc.teachMatch(category, sentence1);
@@ -58,7 +58,7 @@ public class VectorClassifierTest {
 	@Test
 	public void testTeachMatchStringString() throws ClassifierException {
 		TermVectorStorage<String, String> storage = new HashMapTermVectorStorage<String, String>();
-		VectorClassifier<String, String> vc = new VectorClassifier<String, String>(storage, new DefaultTokenizer(), new DefaultStopWordsProvider());
+		VectorClassifier<String, String> vc = new VectorClassifier<String, String>(storage, new SimpleStringTokenizer(), new DefaultStopWordsProvider());
 
 		String category = "test";
 		vc.teachMatch(category, sentence1);

@@ -76,7 +76,7 @@ public class Utilities {
     }
 
     public static Map<String, Integer> getWordFrequency(String input, boolean caseSensitive) {
-        return getWordFrequency(input, new DefaultTokenizer(), new DefaultStopWordsProvider());
+        return getWordFrequency(input, new SimpleStringTokenizer(), new DefaultStopWordsProvider());
     }
 
     /**

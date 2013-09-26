@@ -89,7 +89,7 @@ public class UtilitiesTest extends TestCase {
 		assertEquals(new Integer(2), (Integer) result.get("again"));
 
 		// test without a stop word provider
-		result = Utilities.getWordFrequency(sentence, new DefaultTokenizer(), new DefaultStopWordsProvider());
+		result = Utilities.getWordFrequency(sentence, new SimpleStringTokenizer(), new DefaultStopWordsProvider());
 		assertNotNull(result);
 		assertEquals(4, result.size());
 		assertNotNull(result.get("hello"));
@@ -120,7 +120,7 @@ public class UtilitiesTest extends TestCase {
 			assertEquals(expectedResult[i], result[i]);
 		}
 
-		String[] words = new DefaultTokenizer().tokenize(sentence.toLowerCase());
+		String[] words = new SimpleStringTokenizer().tokenize(sentence.toLowerCase());
 		result = Utilities.getUniqueWords(words);
 		assertEquals(4, result.length);
 	}

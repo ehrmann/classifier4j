@@ -66,7 +66,7 @@ import java.util.Stack;
  * @since 18 Nov 2003
  * @author Nick Lothian
  */
-public class SimpleHTMLTokenizer extends DefaultTokenizer {
+public class SimpleHTMLTokenizer extends SimpleStringTokenizer {
 
     /**
      * Constructor that using the BREAK_ON_WORD_BREAKS tokenizer config by default

@@ -53,7 +53,7 @@ package net.sf.classifier4J;
 /** 
  * @author Peter Leschev
  */
-public interface ITokenizer<I> {
+public interface ITokenizer<I, T> {
 
     /**
      * <p>Splits up the string passed into the tokens which
@@ -62,6 +62,6 @@ public interface ITokenizer<I> {
          * @return Should never return null, rather it should return an empty array of
          *         Strings if there aren't any elements to return.
      */
-    public I[] tokenize(I input);
+    public T[] tokenize(I input);
 
 }

@@ -52,8 +52,7 @@ public class VectorTrainee<C,I> implements ITrainable<C,I> {
         
         return;
     }
-
-
+    
     /**
      * @see net.sf.classifier4J.ITrainable#teachNonMatch(java.lang.String, java.lang.String)
      */
