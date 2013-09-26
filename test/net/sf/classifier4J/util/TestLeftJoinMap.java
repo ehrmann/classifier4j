@@ -29,9 +29,12 @@ package net.sf.classifier4J.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.classifier4J.util.LeftJoinMap.Reducer;
 
@@ -39,6 +42,24 @@ import org.junit.Test;
 
 public class TestLeftJoinMap {
 
+	protected static <K> Reducer<K, String, String, String> concatenatingReducer() {
+		return new Reducer<K, String, String, String>() {
+			@Override
+			public String reduce(K key, String leftValue, String rightValue) {
+				return rightValue != null ? leftValue + rightValue : null;
+			}
+		};
+	}
+		
+	protected static <K> Reducer<K, Integer, Integer, Integer> addingReducer() {
+		return new Reducer<K, Integer, Integer, Integer>() {
+			@Override
+			public Integer reduce(K key, Integer leftValue, Integer rightValue) {
+				return rightValue != null ? leftValue + rightValue : leftValue;
+			}
+		};
+	}
+	
 	@Test
 	public void test() {
 		
@@ -61,12 +82,7 @@ public class TestLeftJoinMap {
 		expected.put(3, null);
 		expected.put(4, "four");
 		
-		Map<Integer, String> result = new LeftJoinMap<Integer, String, String, String>(left, right, new Reducer<Integer, String, String, String>() {
-			@Override
-			public String reduce(Integer key, String leftValue, String rightValue) {
-				return rightValue != null ? leftValue + rightValue : null;
-			}
-		});
+		Map<Integer, String> result = new LeftJoinMap<Integer, String, String, String>(left, right, TestLeftJoinMap.<Integer>concatenatingReducer());
 		
 		assertEquals(left.size(), result.size());
 		assertEquals(expected, result);
@@ -117,12 +133,7 @@ public class TestLeftJoinMap {
 		expected.put("l", 77);
 		expected.put("m", 30);
 		
-		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(left, right, new Reducer<String, Integer, Integer, Integer>() {
-			@Override
-			public Integer reduce(String key, Integer leftValue, Integer rightValue) {
-				return rightValue != null ? leftValue + rightValue : leftValue;
-			}
-		});
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(left, right, TestLeftJoinMap.<String>addingReducer());
 		
 		assertEquals(left.size(), result.size());
 		assertEquals(expected, result);
@@ -146,12 +157,7 @@ public class TestLeftJoinMap {
 		expected.put("a", 10);
 		expected.put(null, 88);
 		
-		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(left, right, new Reducer<String, Integer, Integer, Integer>() {
-			@Override
-			public Integer reduce(String key, Integer leftValue, Integer rightValue) {
-				return rightValue != null ? leftValue + rightValue : leftValue;
-			}
-		});
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(left, right, TestLeftJoinMap.<String>addingReducer());
 		
 		assertEquals(left.size(), result.size());
 		assertEquals(expected, result);
@@ -159,4 +165,105 @@ public class TestLeftJoinMap {
 		assertEquals(new HashSet<Integer>(expected.values()), new HashSet<Integer>(result.values()));
 	}
 
+	@Test
+	public void testJoinEmptyRight() {
+		Map<String, Integer> left = new HashMap<String, Integer>();
+		left.put("b", 42);
+		left.put("c", 96);
+		left.put("d", 12);
+		left.put(null, 3);
+		
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(left, Collections.<String, Integer>emptyMap(), TestLeftJoinMap.<String>addingReducer());
+		
+		assertEquals(left, result);
+	}
+	
+	@Test
+	public void testJoinEmptyLeft() {
+		Map<String, Integer> right = new HashMap<String, Integer>();
+		right.put("b", 42);
+		right.put(null, 3);
+		
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.<String, Integer>emptyMap(), right, TestLeftJoinMap.<String>addingReducer());
+		
+		assertEquals(Collections.<String, Integer>emptyMap(), result);
+	}
+
+	@Test(expected=UnsupportedOperationException.class)
+	public void testRemove() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		result.remove(key);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testPut() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		result.put("b", 10);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testUpdate() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		result.put("b", 10);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testClear() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		result.clear();
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testEntrySetAdd() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		result.entrySet().add(new Entry<String, Integer>() {
+			@Override public Integer setValue(Integer arg0) {
+				return null;
+			}
+			
+			@Override public Integer getValue() {
+				return null;
+			}
+			
+			@Override public String getKey() {
+				return null;
+			}
+		});
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testEntrySetRemove() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		result.entrySet().remove(result.entrySet().iterator().next());
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testEntrySetIteratorRemove() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		Iterator<Entry<String, Integer>> iterator = result.entrySet().iterator();
+		iterator.next();
+		iterator.remove();
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testEntrySetEntryUpdate() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		Iterator<Entry<String, Integer>> iterator = result.entrySet().iterator();
+		iterator.next().setValue(0);
+	}
+	
+	@Test(expected=UnsupportedOperationException.class)
+	public void testEntrySetClear() {
+		String key = "a";
+		Map<String, Integer> result = new LeftJoinMap<String, Integer, Integer, Integer>(Collections.singletonMap(key, 10), Collections.singletonMap(key, 12), TestLeftJoinMap.<String>addingReducer());
+		result.entrySet().clear();
+	}
 }
