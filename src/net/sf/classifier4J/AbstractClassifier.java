@@ -51,18 +51,20 @@
 
 package net.sf.classifier4J;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * 
  * Implementaion of the {@link net.sf.classifier4J.IClassifier#setMatchCutoff(double)} 
  * and {@link net.sf.classifier4J.IClassifier#isMatch(java.lang.String)} methods.
  * 
  * @author Nick Lothian
+ * @author David Ehrmann
  *
  */
-public abstract class AbstractClassifier<I> implements IClassifier<I> {
+public abstract class AbstractClassifier {
 
-	// Use an wrapper so setMatchCutoff and getMatchCutoff operate atomically
-    private volatile Double cutoff = IClassifier.DEFAULT_CUTOFF;
+    private final AtomicLong cutoff = new AtomicLong(Double.doubleToLongBits(IClassifier.DEFAULT_CUTOFF));
 
     /**
      * 
@@ -79,30 +81,10 @@ public abstract class AbstractClassifier<I> implements IClassifier<I> {
             throw new IllegalArgumentException("Cutoff must be equal or less than 1 and greater than or equal to 0");
         }
 
-        this.cutoff = cutoff;
-    }
+        this.cutoff.set(Double.doubleToLongBits(cutoff));
+    }	
 
     public double getMatchCutoff() {
-        return this.cutoff;
+        return Double.longBitsToDouble(this.cutoff.get());
     }
-
-    /**
-     * <p>Implementation of {@link net.sf.classifier4J.IClassifier#isMatch(java.lang.String)}
-     * method.</p>
-     * 
-     * @see net.sf.classifier4J.IClassifier#isMatch(java.lang.String)
-     */
-    public boolean isMatch(I input) throws ClassifierException {
-        double matchProbability = classify(input);
-
-        return isMatch(matchProbability);
-    }
-
-    /**
-     * @see net.sf.classifier4J.IClassifier#isMatch(double)
-     */
-    public boolean isMatch(double matchProbability) {
-        return (matchProbability >= cutoff);
-    }
-
 }

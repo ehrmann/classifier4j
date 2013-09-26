@@ -50,13 +50,13 @@
  */
 package net.sf.classifier4J;
 
+import java.util.Collection;
+
 /**
  * @author Nick Lothian
  * @author Peter Leschev
  */
-public interface ICategorisedClassifier<C,I> extends IClassifier<I> {
-
-    public static final String DEFAULT_CATEGORY = "DEFAULT";
+public interface ICategorisedClassifier<C,T> {
 
     /**
      *
@@ -70,7 +70,7 @@ public interface ICategorisedClassifier<C,I> extends IClassifier<I> {
          * @throws ClassifierException If a fatal problem occurs. For example,
          *                             the database is unavailable.
      */
-    public double classify(C category, I input) throws ClassifierException;
+    public double classify(C category, Collection<T> tokens) throws ClassifierException;
 
     /**
      * 
@@ -84,6 +84,6 @@ public interface ICategorisedClassifier<C,I> extends IClassifier<I> {
          * @throws ClassifierException If a fatal problem occurs. For example,
          *                             the database is unavailable.
      */
-    public boolean isMatch(C category, I input) throws ClassifierException;
+    public boolean isMatch(C category, Collection<T> tokens) throws ClassifierException;
 
 }
