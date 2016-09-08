@@ -57,9 +57,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import com.davidehrmann.classifier4j.DefaultStopWordsProvider;
 import com.davidehrmann.classifier4j.tokenizer.SimpleStringTokenizer;
-import com.davidehrmann.classifier4j.IClassifier;
-import com.davidehrmann.classifier4j.IStopWordProvider;
-import com.davidehrmann.classifier4j.tokenizer.ITokenizer;
+import com.davidehrmann.classifier4j.Classifier;
+import com.davidehrmann.classifier4j.StopWordProvider;
+import com.davidehrmann.classifier4j.tokenizer.Tokenizer;
 
 import org.junit.Test;
 
@@ -70,8 +70,8 @@ import org.junit.Test;
 public class BayesianClassifierTest {
 
 	protected final SimpleWordsDataSource<String, Integer> wds = new SimpleWordsDataSource<String, Integer>();
-	protected final ITokenizer<String> tokenizer = new SimpleStringTokenizer();
-	protected final IStopWordProvider<String> stopWordProvider = new DefaultStopWordsProvider();
+	protected final Tokenizer<String> tokenizer = new SimpleStringTokenizer();
+	protected final StopWordProvider<String> stopWordProvider = new DefaultStopWordsProvider();
 	protected final BayesianClassifier<Integer,String> classifier = new BayesianClassifier<Integer,String>(wds, tokenizer, stopWordProvider);
 
 
@@ -80,7 +80,7 @@ public class BayesianClassifierTest {
 
 		String sentence[] = { "This", "is", "a", "sentence", "about", "java" };
 
-		assertEquals(IClassifier.NEUTRAL_PROBABILITY, classifier.classify(null, sentence), 0d);
+		assertEquals(Classifier.NEUTRAL_PROBABILITY, classifier.classify(null, sentence), 0d);
 
 		wds.setWordProbability(new WordProbability<String, Integer>("This", 0.5d));
 		wds.setWordProbability(new WordProbability<String, Integer>("is", 0.5d));

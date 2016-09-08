@@ -53,6 +53,7 @@ package com.davidehrmann.classifier4j.bayesian;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,49 +63,40 @@ import java.util.Map;
  * @author Peter Leschev
  *  
  */
-public class SimpleWordsDataSource<W,C> implements IWordsDataSource<W,C>, Serializable {
+public class SimpleWordsDataSource<W,C> implements WordsDataSource<W,C>, Serializable {
 
 	private static final long serialVersionUID = -2207519522927680071L;
 	
-	private Map<W,WordProbability<W,C>> words = new HashMap<W,WordProbability<W,C>>();
+	protected final Map<W,WordProbability<W,C>> words = new HashMap<>();
 
     public void setWordProbability(WordProbability<W,C> wp) {
         words.put(wp.getWord(), wp);
     }
 
     /**
-     * @see IWordsDataSource#getWordProbability(java.lang.String)
+     * @see WordsDataSource#getWordProbability(W word)
      */
     public WordProbability<W,C> getWordProbability(W word) {
     	return words.get(word);
     }
 
     public Collection<WordProbability<W,C>> getAll() {
-        return words.values();
+        return Collections.unmodifiableCollection(words.values());
     }
 
     /**
-     * @see IWordsDataSource#addMatch(java.lang.String)
+     * @see WordsDataSource#addMatch(W word)
      */
     public void addMatch(W word) {
-        WordProbability<W,C> wp = words.get(word);
-        if (wp == null) {
-            setWordProbability(new WordProbability<W,C>(word, 1, 0));
-        } else {
-            wp.setMatchingCount(wp.getMatchingCount() + 1);
-        }
+        WordProbability<W,C> wp = words.computeIfAbsent(word, k -> new WordProbability<>());
+        wp.setMatchingCount(wp.getMatchingCount() + 1);
     }
 
     /**
-     * @see IWordsDataSource#addNonMatch(java.lang.String)
+     * @see WordsDataSource#addNonMatch(W word)
      */
     public void addNonMatch(W word) {
-        WordProbability<W,C> wp = words.get(word);
-        if (wp == null) {
-            words.put(word, new WordProbability<W,C>(word, 0, 1));
-        } else {
-            wp.setNonMatchingCount(wp.getNonMatchingCount() + 1);
-        }
+        WordProbability<W,C> wp = words.computeIfAbsent(word, k -> new WordProbability<>());
+        wp.setNonMatchingCount(wp.getNonMatchingCount() + 1);
     }
-
 }

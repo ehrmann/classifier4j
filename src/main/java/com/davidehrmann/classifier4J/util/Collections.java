@@ -7,7 +7,7 @@ import java.util.Map;
 public class Collections {
 
 	public static <K> Map<K, Integer> frequencyMap(Collection<K> items) {
-    	Map<K, Integer> frequencyMap = new HashMap<K, Integer>();
+    	Map<K, Integer> frequencyMap = new HashMap<>();
 
     	for (K item : items) {
     		if (frequencyMap.containsKey(item)) {

@@ -59,45 +59,34 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CustomizableStopWordProvider implements IStopWordProvider<String> {
+public class CustomizableStopWordProvider extends SetStopWordProvider<String> {
 
-	private final Set<String> words;
+    public static final String DEFAULT_STOPWORD_PROVIDER_RESOURCENAME = "stopwords.en.txt";
 
-	public static final String DEFAULT_STOPWORD_PROVIDER_RESOURCENAME = "stopwords.en.txt";
+    /**
+     *
+     * @param filename Identifies the name of a textfile on the classpath that contains
+     * a list of stop words, one on each line
+     */
+    public CustomizableStopWordProvider(String filename) throws IOException {
+        super(loadFromResource(filename));
+    }
 
-	/**
-	 * 
-	 * @param filename Identifies the name of a textfile on the classpath that contains
-	 * a list of stop words, one on each line
-	 */
-	public CustomizableStopWordProvider(String resourcename) throws IOException {
-		Set<String> tempWords = new HashSet<String>();
-		InputStream in = CustomizableStopWordProvider.class.getResourceAsStream(resourcename);
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-			try {
-				String word;
-				while ((word = reader.readLine()) != null) {
-					tempWords.add(word.trim());
-				}
+    public CustomizableStopWordProvider() throws IOException {
+        this(DEFAULT_STOPWORD_PROVIDER_RESOURCENAME);
+    }
 
-				this.words = Collections.unmodifiableSet(tempWords);
-			} finally {
-				reader.close();
-			}
-		} finally {
-			in.close();
-		}
-	}
+    private static Set<String> loadFromResource(String filename) throws IOException {
+        Set<String> tempWords = new HashSet<>();
+        try (InputStream in = CustomizableStopWordProvider.class.getResourceAsStream(filename)) {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+                String word;
+                while ((word = reader.readLine()) != null) {
+                    tempWords.add(word.trim());
+                }
 
-	public CustomizableStopWordProvider() throws IOException {
-		this(DEFAULT_STOPWORD_PROVIDER_RESOURCENAME);
-	}
-
-	/**
-	 * @see IStopWordProvider#isStopWord(java.lang.String)
-	 */
-	public boolean isStopWord(String word) {
-		return words.contains(word);
-	}
+                return Collections.unmodifiableSet(tempWords);
+            }
+        }
+    }
 }

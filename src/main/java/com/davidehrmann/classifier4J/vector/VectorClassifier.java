@@ -8,11 +8,11 @@ import java.util.Map;
 import com.davidehrmann.classifier4j.util.LeftJoinMap;
 import com.davidehrmann.classifier4j.AbstractClassifier;
 import com.davidehrmann.classifier4j.ClassifierException;
-import com.davidehrmann.classifier4j.ICategorisedClassifier;
+import com.davidehrmann.classifier4j.CategorizedClassifier;
 import com.davidehrmann.classifier4j.vector.VectorUtils.IntegerTuple;
 
 
-public class VectorClassifier<C,T> extends AbstractClassifier implements ICategorisedClassifier<C,T> {
+public class VectorClassifier<C,T> extends AbstractClassifier implements CategorizedClassifier<C,T> {
     public static double DEFAULT_VECTORCLASSIFIER_CUTOFF = 0.80d;
     
     private final int numTermsInVector = 50;
@@ -26,14 +26,14 @@ public class VectorClassifier<C,T> extends AbstractClassifier implements ICatego
     }
     
     /**
-     * @see ICategorisedClassifier#classify(java.lang.String, java.lang.String)
+     * @see CategorizedClassifier#classify(java.lang.String, java.lang.String)
      */
 
     public double classify(C category, Collection<T> tokens) throws ClassifierException {
 
     	// Create a map of the word frequency from the tokens
     	// TODO: replace with map-reduce
-    	Map<T, Integer> tokenFrequencies = new HashMap<T, Integer>();
+    	Map<T, Integer> tokenFrequencies = new HashMap<>();
 
     	for (T token : tokens) {
     		if (tokenFrequencies.containsKey(token)) {
@@ -57,7 +57,7 @@ public class VectorClassifier<C,T> extends AbstractClassifier implements ICatego
     }
 
     /**
-     * @see ICategorisedClassifier#isMatch(java.lang.String, java.lang.String)
+     * @see CategorizedClassifier#isMatch(C category, Collection<T> input)
      */
     public boolean isMatch(C category, Collection<T> inputs) throws ClassifierException {
         return (getMatchCutoff() < classify(category, inputs));

@@ -49,18 +49,42 @@
  * ====================================================================
  */
 
-package com.davidehrmann.classifier4j.tokenizer;
-
-import com.davidehrmann.classifier4j.ClassifierException;
+package com.davidehrmann.classifier4j.bayesian;
 
 /**
- * @author Nick Lothian
+ * Interface used by BayesianClassifier to determine the probability of each word.
+ * 
+ * @author Nick Lothian 
  * @author Peter Leschev
+ * 
  */
-public interface ITrainable<C,I> {
-    public void teachMatch(I input) throws ClassifierException;
-    public void teachMatch(C category, I input) throws ClassifierException;
+public interface WordsDataSource<W,C> {
+    /**
+     * @param word The word to calculate the probability of
+     * @return The word probability if the word exists, null otherwise;
+     *
+     * @throws WordsDataSourceException If there is a fatal problem. For
+     *         example, the database is unavailable
+     */
+    WordProbability<W,C> getWordProbability(W word) throws WordsDataSourceException;
 
-    public void teachNonMatch(I input) throws ClassifierException;
-    public void teachNonMatch(C category, I input) throws ClassifierException;
+    /**
+     * Add a matching word to the data source
+     * 
+     * @param word the word that matches
+     *
+     * @throws WordsDataSourceException If there is a fatal problem. For
+     *         example, the database is unavailable
+     */
+    void addMatch(W word) throws WordsDataSourceException;
+
+    /**
+     * Add a non-matching word to the data source
+     * 
+     * @param word the word that does not match
+     *
+     * @throws WordsDataSourceException If there is a fatal problem. For
+     *         example, the database is unavailable
+     */
+    void addNonMatch(W word) throws WordsDataSourceException;
 }

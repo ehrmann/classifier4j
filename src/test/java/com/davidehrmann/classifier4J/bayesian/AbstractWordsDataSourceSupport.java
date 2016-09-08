@@ -61,9 +61,9 @@ import org.junit.Test;
 
 public abstract class AbstractWordsDataSourceSupport {
 
-	protected final IWordsDataSource<String, Integer> wordsDataSource;
+	protected final WordsDataSource<String, Integer> wordsDataSource;
 
-	public AbstractWordsDataSourceSupport(IWordsDataSource<String, Integer> wordsDataSource) {
+	public AbstractWordsDataSourceSupport(WordsDataSource<String, Integer> wordsDataSource) {
 		if (wordsDataSource == null) {
 			throw new NullPointerException();
 		}

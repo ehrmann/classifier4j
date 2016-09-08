@@ -52,11 +52,11 @@
 package com.davidehrmann.classifier4j.bayesian;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import com.davidehrmann.classifier4j.util.EqualsBuilder;
-import com.davidehrmann.classifier4j.IClassifier;
+import com.davidehrmann.classifier4j.Classifier;
 import com.davidehrmann.classifier4j.util.CompareToBuilder;
-import com.davidehrmann.classifier4j.util.HashCodeBuilder;
 import com.davidehrmann.classifier4j.util.ToStringBuilder;
 
 /**
@@ -71,7 +71,7 @@ import com.davidehrmann.classifier4j.util.ToStringBuilder;
  * @author Nick Lothian
  * @author Peter Leschev
  */
-public class WordProbability<W,C> implements /*Comparable<WordProbability<W,C>>, */Serializable {
+public class WordProbability<W,C> implements Comparable<WordProbability<W,C>>, Serializable {
 
 	private static final long serialVersionUID = 1448276338585284273L;
 
@@ -83,7 +83,7 @@ public class WordProbability<W,C> implements /*Comparable<WordProbability<W,C>>,
     private long matchingCount = UNDEFINED;
     private long nonMatchingCount = UNDEFINED;
 
-    private double probability = IClassifier.NEUTRAL_PROBABILITY;
+    private double probability = Classifier.NEUTRAL_PROBABILITY;
 
     public WordProbability() {
         setMatchingCount(0);
@@ -162,24 +162,25 @@ public class WordProbability<W,C> implements /*Comparable<WordProbability<W,C>>,
 
     private void calculateProbability() {
 
-        double result = IClassifier.NEUTRAL_PROBABILITY;
+        double result;
 
         if (matchingCount == 0) {
             if (nonMatchingCount == 0) {
-                result = IClassifier.NEUTRAL_PROBABILITY;
+                result = Classifier.NEUTRAL_PROBABILITY;
             } else {
-                result = IClassifier.LOWER_BOUND;
+                result = Classifier.LOWER_BOUND;
             }
         } else {
-            result = BayesianClassifier.normaliseSignificance((double) matchingCount / (double) (matchingCount + nonMatchingCount));
+            result = Classifier.normalizeSignificance((double) matchingCount / (double) (matchingCount + nonMatchingCount));
         }
 
         probability = result;
     }
 
     /**
-         * @return
-         */
+     *
+     * @return
+     */
     public double getProbability() {
         return probability;
     }
@@ -194,7 +195,6 @@ public class WordProbability<W,C> implements /*Comparable<WordProbability<W,C>>,
     }
 
     public long getNonMatchingCount() {
-
         if (nonMatchingCount == UNDEFINED) {
             throw new UnsupportedOperationException("nonMatchingCount has not been defined");
         }
@@ -230,8 +230,6 @@ public class WordProbability<W,C> implements /*Comparable<WordProbability<W,C>>,
     }
 
     public int hashCode() {
-        // you pick a hard-coded, randomly chosen, non-zero, odd number
-        // ideally different for each class
-        return new HashCodeBuilder(17, 37).append(word).append(category).toHashCode();
+        return Objects.hash(word, category);
     }
 }

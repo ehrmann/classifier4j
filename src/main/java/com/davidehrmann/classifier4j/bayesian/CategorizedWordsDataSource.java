@@ -48,42 +48,45 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package com.davidehrmann.classifier4j;
-
-import java.util.Collection;
+package com.davidehrmann.classifier4j.bayesian;
 
 /**
+ * Interface used by BayesianClassifier to determine the probability of each 
+ * word based on a particular category.
+ *
  * @author Nick Lothian
  * @author Peter Leschev
  */
-public interface ICategorisedClassifier<C,T> {
-
+public interface CategorizedWordsDataSource<W,C> extends WordsDataSource<W,C> {
     /**
-     *
-     * Function to determine the probability string matches a criteria for a given
-     * category.
-     * 
      * @param category the category to check against
-     * @param input the string to classify
-     * @return the likelyhood that this string is a match for this net.sf.classifier4j. 1 means 100% likely.
+     * @param word The word to calculate the probability of
+     * @return The word probability if the word exists, null otherwise;
          *
-         * @throws ClassifierException If a fatal problem occurs. For example,
-         *                             the database is unavailable.
+         * @throws WordsDataSourceException If there is a fatal problem. For 
+         *         example, the database is unavailable
      */
-    public double classify(C category, Collection<T> tokens) throws ClassifierException;
+    WordProbability<W,C> getWordProbability(C category, W word) throws WordsDataSourceException;
 
     /**
+     * Add a matching word to the data source
      * 
-     * Function to determine if a string matches a criteria for a given category
-     * 
-     * @param category the category to check against 
-     * @param input the string to classify
-     * @return true if the input string has a probability >= the cutoff probability of 
-     * matching
+     * @param category the category add the match to
+     * @param word the word that matches	 
          *
-         * @throws ClassifierException If a fatal problem occurs. For example,
-         *                             the database is unavailable.
+         * @throws WordsDataSourceException If there is a fatal problem. For 
+         *         example, the database is unavailable
      */
-    public boolean isMatch(C category, Collection<T> tokens) throws ClassifierException;
+    void addMatch(C category, W word) throws WordsDataSourceException;
 
+    /**
+     * Add a non-matching word to the data source
+     *
+     * @param category the category add the non-match to 
+     * @param word the word that does not match
+         *
+         * @throws WordsDataSourceException If there is a fatal problem. For 
+         *         example, the database is unavailable
+     */
+    void addNonMatch(C category, W word) throws WordsDataSourceException;
 }

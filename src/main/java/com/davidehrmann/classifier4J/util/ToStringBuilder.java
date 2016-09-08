@@ -52,38 +52,36 @@
 package com.davidehrmann.classifier4j.util;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class ToStringBuilder implements Serializable {
-    StringBuffer output = new StringBuffer("");
+    private final StringBuilder output;
 
     /**
-     * @param classifier
+     * @param o
      */
     public ToStringBuilder(Object o) {
-        if (o == null) {
-            throw new IllegalArgumentException("Object cannot be null");
-        }
-        output = new StringBuffer(o.getClass().getName() + " " );
+        Objects.requireNonNull(o, "Object cannot be null");
+        output = new StringBuilder(o.getClass().getName() + " " );
     }
 
 
     public ToStringBuilder append(String name, Object o) {
         if (o == null) {
-            output.append(name + ": null");    
+            output.append(name).append(": null");
         } else {
-            output.append(name + ": " + o.toString());
+            output.append(name).append(": ").append(o.toString());
         }
         return this;     
     }
     
     public ToStringBuilder append(String name, double num) {
-        output.append(name + ": " + num);
+        output.append(name).append(": ").append(num);
         return this;
     }
     
     public String toString() {
         return output.toString();        
     }
-    
-    
+
 }

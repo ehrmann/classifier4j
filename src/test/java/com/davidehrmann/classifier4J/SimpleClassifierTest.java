@@ -115,9 +115,9 @@ public class SimpleClassifierTest extends TestCase {
 	}
 	
 	public void testIsMatchDouble() throws Exception {
-		assertTrue(classifier.isMatch(IClassifier.DEFAULT_CUTOFF));		
-		assertTrue(classifier.isMatch(IClassifier.DEFAULT_CUTOFF + 0.01d));
-		assertFalse(classifier.isMatch(IClassifier.DEFAULT_CUTOFF - 0.01d));
+		assertTrue(classifier.isMatch(Classifier.DEFAULT_CUTOFF));
+		assertTrue(classifier.isMatch(Classifier.DEFAULT_CUTOFF + 0.01d));
+		assertFalse(classifier.isMatch(Classifier.DEFAULT_CUTOFF - 0.01d));
 	}
 
 }

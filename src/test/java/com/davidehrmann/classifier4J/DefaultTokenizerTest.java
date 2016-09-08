@@ -58,7 +58,7 @@ import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 
-import com.davidehrmann.classifier4j.tokenizer.ITokenizer;
+import com.davidehrmann.classifier4j.tokenizer.Tokenizer;
 import com.davidehrmann.classifier4j.tokenizer.SimpleStringTokenizer;
 import org.junit.Test;
 
@@ -93,7 +93,7 @@ public class DefaultTokenizerTest {
 	@Test
 	public void testTokenize() {
 
-		ITokenizer<String> tok = null;
+		Tokenizer<String> tok = null;
 		String words[] = null;
 
 		tok = new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WHITESPACE);
@@ -128,7 +128,7 @@ public class DefaultTokenizerTest {
 	@Test
 	public void testTokenize2() {
 
-		ITokenizer<String> tok = new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WORD_BREAKS);
+		Tokenizer<String> tok = new SimpleStringTokenizer(SimpleStringTokenizer.BREAK_ON_WORD_BREAKS);
 		
 		String[] lol_tests = new String[] {
 				"Lol on point south park...on point.",

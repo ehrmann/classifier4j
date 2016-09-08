@@ -51,28 +51,24 @@
 
 package com.davidehrmann.classifier4j.bayesian;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.davidehrmann.classifier4j.AbstractCategorizedTrainableClassifier;
-import com.davidehrmann.classifier4j.ICategorisedClassifier;
-import com.davidehrmann.classifier4j.tokenizer.ITokenizer;
-import com.davidehrmann.classifier4j.IClassifier;
-import com.davidehrmann.classifier4j.IStopWordProvider;
+import com.davidehrmann.classifier4j.*;
+import com.davidehrmann.classifier4j.tokenizer.Tokenizer;
 import com.davidehrmann.classifier4j.util.ToStringBuilder;
+
+import java.util.*;
 
 /**
  *
- * <p>A implementation of {@link IClassifier} based on Bayes'
+ * <p>A implementation of {@link Classifier} based on Bayes'
  * theorem (see http://www.wikipedia.org/wiki/Bayes_theorem).</p>
  *
  * <p>The basic usage pattern for this class is:
  * <ol>
- * 		<li>Create a instance of {@link IWordsDataSource}</li>
+ * 		<li>Create a instance of {@link WordsDataSource}</li>
  * 		<li>Create a new instance of BayesianClassifier, passing the IWordsDataSource
  * 			to the constructor</li>
- * 		<li>Call {@link IClassifier#classify(java.lang.String) }
- * 			or {@link IClassifier#isMatch(java.lang.String) }
+ * 		<li>Call {@link Classifier#classify(I) }
+ * 			or {@link Classifier#isMatch(I) }
  * </ol>
  * </p>
  *
@@ -88,11 +84,11 @@ import com.davidehrmann.classifier4j.util.ToStringBuilder;
  * @author Peter Leschev
  *
  */
-public class BayesianClassifier<C,I> extends AbstractCategorizedTrainableClassifier<C,I> {
+public class BayesianClassifier<C,I,T> extends AbstractCategorizedTrainableClassifier<C,I> {
 
-    protected final IWordsDataSource<I,C> wordsData;
-    protected final ITokenizer<I> tokenizer;
-    protected final IStopWordProvider<I> stopWordProvider;
+    protected final WordsDataSource<T,C> wordsData;
+    protected final Tokenizer<I,T> tokenizer;
+    protected final StopWordProvider<T> stopWordProvider;
     
     protected final boolean categorize;
 
@@ -100,123 +96,84 @@ public class BayesianClassifier<C,I> extends AbstractCategorizedTrainableClassif
      * Constructor for BayesianClassifier that specifies a datasource, tokenizer
      * and stop words provider
      *
-     * @param wd a {@link IWordsDataSource}
-     * @param tokenizer a {@link ITokenizer}
-     * @param swp a {@link IStopWordProvider}
+     * @param wd a {@link WordsDataSource}
+     * @param tokenizer a {@link Tokenizer}
+     * @param swp a {@link StopWordProvider}
      */
-    public BayesianClassifier(IWordsDataSource<I,C> wd, ITokenizer<I> tokenizer, IStopWordProvider<I> swp) {
-        if (wd == null) {
-            throw new IllegalArgumentException("IWordsDataSource can't be null");
-        }
-        this.wordsData = wd;
+    public BayesianClassifier(WordsDataSource<T,C> wd, Tokenizer<I,T> tokenizer, StopWordProvider<T> swp) {
+        this.wordsData = Objects.requireNonNull(wd, "IWordsDataSource can't be null");
+        this.tokenizer = Objects.requireNonNull(tokenizer, "ITokenizer can't be null");
+        this.stopWordProvider = Objects.requireNonNull(swp, "IStopWordProvider can't be null");
 
-        if (tokenizer == null) {
-            throw new IllegalArgumentException("ITokenizer can't be null");
-        }
-        this.tokenizer = tokenizer;
-
-        if (swp == null) {
-            throw new IllegalArgumentException("IStopWordProvider can't be null");
-        }
-        this.stopWordProvider = swp;
-        
-        this.categorize = wordsData instanceof ICategorisedWordsDataSource;
+        this.categorize = wordsData instanceof CategorizedWordsDataSource;
     }
 
     /**
-     * @see ICategorisedClassifier#isMatch(java.lang.String, java.lang.String)
+     * @see CategorizedClassifier#isMatch(C, I)
      */
     public boolean isMatch(C category, I input) throws WordsDataSourceException {
-        return isMatch(category, tokenizer.tokenize(input));
+        return isMatchWithTokens(category, Arrays.asList(tokenizer.tokenize(input)));
     }
 
     /**
-     * @see ICategorisedClassifier#classify(java.lang.String, java.lang.String)
+     * @see CategorizedClassifier#classify(C, I)
      */
     public double classify(C category, I input) throws WordsDataSourceException {
-        if (category == null) {
-            throw new IllegalArgumentException("category cannot be null");
-        }
-        if (input == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
-
+        Objects.requireNonNull(category, "category cannot be null");
+        Objects.requireNonNull(input, "input cannot be null");
         checkCategoriesSupported(category);
 
-        return classify(category, tokenizer.tokenize(input));
+        return classify(category, Arrays.asList(tokenizer.tokenize(input)));
     }
 
     public void teachMatch(C category, I input) throws WordsDataSourceException {
-        if (category == null) {
-            throw new IllegalArgumentException("category cannot be null");
-        }
-
-        if (input == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
-
+        Objects.requireNonNull(category, "category cannot be null");
+        Objects.requireNonNull(input, "input cannot be null");
         checkCategoriesSupported(category);
 
-        teachMatch(category, tokenizer.tokenize(input));
+        teachMatchWithToken(category, Arrays.asList(tokenizer.tokenize(input)));
     }
 
-    public void teachNonMatch(C category, I input) throws WordsDataSourceException {
-        if (category == null) {
-            throw new IllegalArgumentException("category cannot be null");
-        }
-
-        if (input == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
-
+    public void teachNonMatch(C category, I input) throws ClassifierException {
+        Objects.requireNonNull(category, "category cannot be null");
+        Objects.requireNonNull(input, "input cannot be null");
         checkCategoriesSupported(category);
 
-        teachNonMatch(category, tokenizer.tokenize(input));
+        teachNonMatchWithToken(category, Arrays.asList(tokenizer.tokenize(input)));
     }
 
-    protected boolean isMatch(C category, I input[]) throws WordsDataSourceException {
-        if (input == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
-
+    protected boolean isMatchWithTokens(C category, Collection<T> input) throws WordsDataSourceException {
+        Objects.requireNonNull(input, "input cannot be null");
         checkCategoriesSupported(category);
-
         double matchProbability = classify(category, input);
-
-        return (matchProbability >= super.getMatchCutoff());
+        return matchProbability >= super.getMatchCutoff();
     }
 
-    public double classify(C category, I words[]) throws WordsDataSourceException {
-        WordProbability<I,C>[] wps = calcWordsProbability(category, words);
-        return normaliseSignificance(calculateOverallProbability(wps));
+    public double classify(C category, Collection<T> words) throws WordsDataSourceException {
+        List<WordProbability<T,C>> wps = calcWordsProbability(category, words);
+        return Classifier.normalizeSignificance(calculateOverallProbability(wps));
     }
 
-    protected void teachMatch(C category, I words[]) throws WordsDataSourceException {
-        for (int i = 0; i <= words.length - 1; i++) {
-            if (isClassifiableWord(words[i])) {
+    protected void teachMatchWithToken(C category, Collection<T> words) throws WordsDataSourceException {
+        for (T word : words) {
+            if (isClassifiableWord(word)) {
                 if (categorize) {
-                    ((ICategorisedWordsDataSource) wordsData).addMatch(category, words[i]);
+                    ((CategorizedWordsDataSource<T,C>) wordsData).addMatch(category, word);
                 } else {
-                    wordsData.addMatch(words[i]);
+                    wordsData.addMatch(word);
                 }
             }
         }
     }
 
-    protected void teachNonMatch(C category, I words[]) throws WordsDataSourceException {
-        boolean categorise = false;
-        if (wordsData instanceof ICategorisedWordsDataSource) {
-            categorise = true;
-        }
-
-        for (int i = 0; i <= words.length - 1; i++) {
-            if (isClassifiableWord(words[i])) {
-                if (categorise) {
-                    ((ICategorisedWordsDataSource) wordsData).addNonMatch(category, words[i]);
+    protected void teachNonMatchWithToken(C category, Collection<T> words) throws WordsDataSourceException {
+        for (T word : words) {
+            if (isClassifiableWord(word)) {
+                if (categorize) {
+                    ((CategorizedWordsDataSource<T,C>) wordsData).addNonMatch(category, word);
                 } else {
-                    wordsData.addNonMatch(words[i]);
+                    wordsData.addNonMatch(word);
                 }
-
             }
         }
     }
@@ -230,9 +187,9 @@ public class BayesianClassifier<C,I> extends AbstractCategorizedTrainableClassif
      * @todo need an option to only use the "X" most "important" words when calculating overall probability
      * "important" is defined as being most distant from NEUTAL_PROBABILITY
      */
-    protected double calculateOverallProbability(WordProbability<I,C>[] wps) {
-        if (wps == null || wps.length == 0) {
-            return IClassifier.NEUTRAL_PROBABILITY;
+    protected double calculateOverallProbability(Collection<WordProbability<T,C>> wps) {
+        if (wps == null || wps.isEmpty()) {
+            return Classifier.NEUTRAL_PROBABILITY;
         } else {
             // we need to calculate xy/(xy + z)
             // where z = (1-x)(1-y)
@@ -240,17 +197,17 @@ public class BayesianClassifier<C,I> extends AbstractCategorizedTrainableClassif
             // firstly, calculate z and xy
             double z = 0d;
             double xy = 0d;
-            for (int i = 0; i < wps.length; i++) {
+            for (WordProbability<T, C> wp : wps) {
                 if (z == 0) {
-                    z = (1 - wps[i].getProbability());
+                    z = (1 - wp.getProbability());
                 } else {
-                    z = z * (1 - wps[i].getProbability());
+                    z = z * (1 - wp.getProbability());
                 }
 
                 if (xy == 0) {
-                    xy = wps[i].getProbability();
+                    xy = wp.getProbability();
                 } else {
-                    xy = xy * wps[i].getProbability();
+                    xy = xy * wp.getProbability();
                 }
             }
 
@@ -261,86 +218,71 @@ public class BayesianClassifier<C,I> extends AbstractCategorizedTrainableClassif
         }
     }
 
-	private WordProbability<I,C>[] calcWordsProbability(C category, I[] words) throws WordsDataSourceException {
+	private List<WordProbability<T,C>> calcWordsProbability(C category, Collection<T> words) throws WordsDataSourceException {
         checkCategoriesSupported(category);
 
-        if (words == null) {
-            return new WordProbability[0];
-        } else {
-            List<WordProbability<I,C>> wps = new ArrayList<WordProbability<I,C>>();
-            for (int i = 0; i < words.length; i++) {
-                if (isClassifiableWord(words[i])) {
-                    WordProbability<I,C> wp = null;
-                    if (categorize) {
-                        wp = ((ICategorisedWordsDataSource) wordsData).getWordProbability(category, words[i]);
-                    } else {
-                        wp = wordsData.getWordProbability(words[i]);
-                    }
-                    if (wp != null) {
-                        wps.add(wp);
-                    }
+        List<WordProbability<T,C>> wps = new ArrayList<>();
+        for (T word : words) {
+            if (isClassifiableWord(word)) {
+                WordProbability<T,C> wp;
+                if (categorize) {
+                    wp = ((CategorizedWordsDataSource<T,C>) wordsData).getWordProbability(category, word);
+                } else {
+                    wp = wordsData.getWordProbability(word);
+                }
+                if (wp != null) {
+                    wps.add(wp);
                 }
             }
-            return (WordProbability<I,C>[]) wps.toArray(new WordProbability[wps.size()]);
         }
+        return wps;
     }
 
     private void checkCategoriesSupported(C category) {
         // if the category is not the default
         if (category != null) {
             // and the data source does not support categories
-            if (!(wordsData instanceof ICategorisedWordsDataSource)) {
+            if (!categorize) {
                 // throw an IllegalArgumentException
                 throw new IllegalArgumentException("Word Data Source does not support non-default categories.");
             }
         }
     }
 
-    private boolean isClassifiableWord(I word) {
-        if (word == null || stopWordProvider.isStopWord(word)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    protected static double normaliseSignificance(double sig) {
-
-        if (Double.compare(IClassifier.UPPER_BOUND, sig) < 0) {
-            return IClassifier.UPPER_BOUND;
-        } else if (Double.compare(IClassifier.LOWER_BOUND, sig) > 0) {
-            return IClassifier.LOWER_BOUND;
-        } else {
-            return sig;
-        }
+    private boolean isClassifiableWord(T word) {
+        return !(word == null || stopWordProvider.isStopWord(word));
     }
 
     /**
-     * @return the {@link IWordsDataSource} used
+     * @return the {@link WordsDataSource} used
      * by this classifier
      */
-    public IWordsDataSource<I,C> getWordsDataSource() {
+    public WordsDataSource<T,C> getWordsDataSource() {
         return wordsData;
     }
 
     /**
-     * @return the {@link ITokenizer} used
+     * @return the {@link Tokenizer} used
      * by this classifier
      */
-    public ITokenizer<I> getTokenizer() {
+    public Tokenizer<I,T> getTokenizer() {
         return tokenizer;
     }
 
     /**
-     * @return the {@link IStopWordProvider} used
+     * @return the {@link StopWordProvider} used
      * by this classifier
      */
-    public IStopWordProvider<I> getStopWordProvider() {
+    public StopWordProvider<T> getStopWordProvider() {
         return stopWordProvider;
     }
 
     public String toString() {
-        return new ToStringBuilder(this).append("IWordsDataSource", wordsData).append("ITokenizer", tokenizer).append("IStopWordProvider", stopWordProvider).toString();
+        return new ToStringBuilder(this)
+                .append("IWordsDataSource", wordsData)
+                .append("ITokenizer", tokenizer)
+                .append("IStopWordProvider", stopWordProvider)
+                .toString();
     }
 
 }

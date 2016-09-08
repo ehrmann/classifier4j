@@ -51,7 +51,7 @@
 
 package com.davidehrmann.classifier4j.bayesian;
 
-import com.davidehrmann.classifier4j.IClassifier;
+import com.davidehrmann.classifier4j.Classifier;
 
 import junit.framework.TestCase;
 import junit.textui.TestRunner;
@@ -113,7 +113,7 @@ public class WordProbabilityTest extends TestCase {
 		WordProbability wp = null;
 
 		wp = new WordProbability("", 10, 10);
-		assertEquals(IClassifier.NEUTRAL_PROBABILITY, wp.getProbability(), 0);
+		assertEquals(Classifier.NEUTRAL_PROBABILITY, wp.getProbability(), 0);
 
 		wp = new WordProbability("", 20, 10);
 		assertEquals(0.66, wp.getProbability(), 0.01);
@@ -128,22 +128,22 @@ public class WordProbabilityTest extends TestCase {
 		assertEquals(0.25, wp.getProbability(), 0);
 
 		wp = new WordProbability("", 10, 0);
-		assertEquals(IClassifier.UPPER_BOUND, wp.getProbability(), 0);
+		assertEquals(Classifier.UPPER_BOUND, wp.getProbability(), 0);
 
 		wp = new WordProbability("", 100, 1);
-		assertEquals(IClassifier.UPPER_BOUND, wp.getProbability(), 0);
+		assertEquals(Classifier.UPPER_BOUND, wp.getProbability(), 0);
 
 		wp = new WordProbability("", 1000, 1);
-		assertEquals(IClassifier.UPPER_BOUND, wp.getProbability(), 0);
+		assertEquals(Classifier.UPPER_BOUND, wp.getProbability(), 0);
 
 		wp = new WordProbability("", 0, 10);
-		assertEquals(IClassifier.LOWER_BOUND, wp.getProbability(), 0);
+		assertEquals(Classifier.LOWER_BOUND, wp.getProbability(), 0);
 
 		wp = new WordProbability("", 1, 100);
-		assertEquals(IClassifier.LOWER_BOUND, wp.getProbability(), 0);
+		assertEquals(Classifier.LOWER_BOUND, wp.getProbability(), 0);
 
 		wp = new WordProbability("", 1, 1000);
-		assertEquals(IClassifier.LOWER_BOUND, wp.getProbability(), 0);
+		assertEquals(Classifier.LOWER_BOUND, wp.getProbability(), 0);
 	}
 
 	public void testComparator() {

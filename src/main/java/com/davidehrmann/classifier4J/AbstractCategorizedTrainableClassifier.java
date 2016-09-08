@@ -1,12 +1,10 @@
 package com.davidehrmann.classifier4j;
 
-import com.davidehrmann.classifier4j.bayesian.WordsDataSourceException;
 
-
-public abstract class AbstractCategorizedTrainableClassifier<C,I> extends AbstractClassifier<I> implements ITrainableClassifier<C,I> {
+public abstract class AbstractCategorizedTrainableClassifier<C,I> extends AbstractClassifier implements TrainableClassifier<C,I> {
 
     /**
-     * @see IClassifier#classify(java.lang.String)
+     * @see Classifier#classify(java.lang.String)
      */
 	
 	protected final C defaultCategory;
@@ -19,15 +17,15 @@ public abstract class AbstractCategorizedTrainableClassifier<C,I> extends Abstra
 		this.defaultCategory = defaultCategory;
 	}
 	
-    public double classify(I input) throws WordsDataSourceException, ClassifierException {
+    public double classify(I input) throws ClassifierException {
         return classify(this.defaultCategory, input);
     }
 
-    public void teachMatch(I input) throws WordsDataSourceException, ClassifierException {
+    public void teachMatch(I input) throws ClassifierException {
         teachMatch(this.defaultCategory, input);
     }
 
-    public void teachNonMatch(I input) throws WordsDataSourceException, ClassifierException {
+    public void teachNonMatch(I input) throws ClassifierException {
         teachNonMatch(this.defaultCategory, input);
     }
 

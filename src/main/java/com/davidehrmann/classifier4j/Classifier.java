@@ -77,22 +77,22 @@ package com.davidehrmann.classifier4j;
  * 
  * @see AbstractClassifier
  */
-public interface IClassifier<I> {
+public interface Classifier<I> {
     /**
      * Default value to use if the implementation cannot work out how
      * well a string matches.
      */
-    public static double NEUTRAL_PROBABILITY = 0.5d;
+    double NEUTRAL_PROBABILITY = 0.5d;
 
     /**
      * The minimum likelihood that a string matches
      */
-    public static double LOWER_BOUND = 0.01d;
+    double LOWER_BOUND = 0.01d;
 
     /**
      * The maximum likelihood that a string matches
      */
-    public static double UPPER_BOUND = 0.99d;
+    double UPPER_BOUND = 0.99d;
 
     /**
      * Default cutoff value used by default implementation of 
@@ -102,7 +102,7 @@ public interface IClassifier<I> {
      * The value is 0.9d
      * 
      */
-    public static double DEFAULT_CUTOFF = 0.9d;
+    double DEFAULT_CUTOFF = 0.9d;
 
     /**
      * 
@@ -110,7 +110,7 @@ public interface IClassifier<I> {
      * 
      * @param cutoff the level below which isMatch will return false. Should be between 0 and 1.
      */
-    public void setMatchCutoff(double cutoff);
+    void setMatchCutoff(double cutoff);
 
     /**
      *
@@ -121,7 +121,7 @@ public interface IClassifier<I> {
          *
          * @throws ClassifierException If a non-recoverable problem occurs
      */
-    public double classify(I input) throws ClassifierException;
+    double classify(I input) throws ClassifierException;
 
     /**
      * 
@@ -133,15 +133,25 @@ public interface IClassifier<I> {
          *
          * @throws ClassifierException If a non-recoverable problem occurs
      */
-    public boolean isMatch(I input) throws ClassifierException;
+    boolean isMatch(I input) throws ClassifierException;
 
     /**
      * Convenience method which takes a match probability
-     * (calculated by {@link IClassifier#classify(java.lang.String)})
+     * (calculated by {@link Classifier#classify(I input)})
      * and checks if it would be classified as a match or not
      * 
      * @param matchProbability 
      * @return true if match, false otherwise
      */
-    public boolean isMatch(double matchProbability);
+    boolean isMatch(double matchProbability);
+
+    static double normalizeSignificance(double sig) {
+        if (UPPER_BOUND < sig) {
+            return UPPER_BOUND;
+        } else if (LOWER_BOUND > sig) {
+            return LOWER_BOUND;
+        } else {
+            return sig;
+        }
+    }
 }

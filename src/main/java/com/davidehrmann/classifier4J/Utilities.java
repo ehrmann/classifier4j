@@ -51,7 +51,7 @@
 
 package com.davidehrmann.classifier4j;
 
-import com.davidehrmann.classifier4j.tokenizer.ITokenizer;
+import com.davidehrmann.classifier4j.tokenizer.Tokenizer;
 import com.davidehrmann.classifier4j.tokenizer.SimpleStringTokenizer;
 
 import java.io.BufferedReader;
@@ -91,7 +91,7 @@ public class Utilities {
      * @param stopWordsProvider
      * @return
      */
-    public static <I> Map<I,Integer> getWordFrequency(I input, ITokenizer<I> tokenizer, IStopWordProvider<I> stopWordsProvider) {
+    public static <I> Map<I,Integer> getWordFrequency(I input, Tokenizer<I> tokenizer, StopWordProvider<I> stopWordsProvider) {
         // tokenize into an array of words
         I[] words = tokenizer.tokenize(input);
         
@@ -205,13 +205,8 @@ public class Utilities {
      * @return an array of Strings, each element containing a sentence
      */
     public static String[] getSentences(String input) {
-        if (input == null) {
-            return new String[0];
-        } else {
-            // split on a ".", a "!", a "?" followed by a space or EOL
-            return input.split("(\\.|!|\\?)+(\\s|\\z)");
-        }
-
+        // split on a ".", a "!", a "?" followed by a space or EOL
+        return input.split("(\\.|!|\\?)+(\\s|\\z)");
     }
 
     /**
@@ -219,17 +214,14 @@ public class Utilities {
      * replaced with " "
      */
     public static String getString(InputStream is) throws IOException {
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         String line = "";
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-            stringBuffer.append(line);
-            stringBuffer.append(" ");
+            sb.append(line);
+            sb.append(" ");
         }
 
-        reader.close();
-
-        return stringBuffer.toString().trim();
+        return sb.toString().trim();
     }
 }

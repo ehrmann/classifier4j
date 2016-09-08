@@ -3,15 +3,11 @@ package com.davidehrmann.classifier4j;
 import java.util.Collections;
 import java.util.Set;
 
-public class SetStopWordProvider<W> implements IStopWordProvider<W> {
+public class SetStopWordProvider<W> implements StopWordProvider<W> {
 
 	protected final Set<W> stopWords;
 	
 	public SetStopWordProvider(Set<W> stopWords) {
-		if (stopWords == null) {
-			throw new NullPointerException();
-		}
-		
 		this.stopWords = Collections.unmodifiableSet(stopWords);
 	}
 	

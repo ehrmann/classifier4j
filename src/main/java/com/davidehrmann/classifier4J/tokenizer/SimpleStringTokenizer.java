@@ -54,13 +54,13 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.davidehrmann.classifier4j.IClassifier;
+import com.davidehrmann.classifier4j.Classifier;
 import com.davidehrmann.classifier4j.util.ToStringBuilder;
 
 /** 
  * @author Peter Leschev
  */
-public class SimpleStringTokenizer implements ITokenizer<String, String> {
+public class SimpleStringTokenizer implements Tokenizer<String, String> {
 
     /**
      * Use a the "\W" (non-word characters) regexp to split the string passed to classify
@@ -105,7 +105,7 @@ public class SimpleStringTokenizer implements ITokenizer<String, String> {
     }
 
     /**
-     * <p>Allows the use of custom regular expressions to split up the input to {@link IClassifier#classify(java.lang.String)}.
+     * <p>Allows the use of custom regular expressions to split up the input to {@link Classifier#classify(java.lang.String)}.
      * Note that this regular expression will only be used if tokenizerConfig is set to
      * {@link #BREAK_ON_CUSTOM_REGEXP }</p>
      *

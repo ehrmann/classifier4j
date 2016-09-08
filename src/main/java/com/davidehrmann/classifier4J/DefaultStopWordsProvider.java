@@ -62,16 +62,14 @@ import java.util.Set;
  * @author Peter Leschev
  */
 public class DefaultStopWordsProvider extends SetStopWordProvider<String> {
-	// This array is sorted in the constructor
-
-	private static final Set<String> STOP_WORDS = Collections.unmodifiableSet(new HashSet<String>(Arrays.asList(new String[] {
+	private static final Set<String> STOP_WORDS = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(new String[]{
 			"a",
 			"and",
 			"the",
 			"me",
 			"i",
 			"of",
-			"if", 
+			"if",
 			"it",
 			"is",
 			"they",

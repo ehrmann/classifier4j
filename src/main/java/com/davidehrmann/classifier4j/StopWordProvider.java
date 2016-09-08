@@ -51,8 +51,12 @@
 
 package com.davidehrmann.classifier4j;
 
-import com.davidehrmann.classifier4j.tokenizer.ITrainable;
-
-public interface ITrainableClassifier<C,I> extends ICategorisedClassifier<C,I>, ITrainable<C,I> {
-
+public interface StopWordProvider<I> {
+    /**
+     * Check if a word is a stop word
+     * 
+     * @param word The word to check
+     * @return true if the word is a stop word, false otherwise
+     */
+    public boolean isStopWord(I word);
 }

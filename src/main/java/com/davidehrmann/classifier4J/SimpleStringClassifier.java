@@ -53,7 +53,7 @@ package com.davidehrmann.classifier4j;
 
 /**
  * 
- * <p>Very basic implemntation of the {@link IClassifier} interface.</p>
+ * <p>Very basic implemntation of the {@link Classifier} interface.</p>
  * 
  * <p>This implementation just looks for string (set by {@link #setSearchWord(java.lang.String)})
  * in the input passed to  {@link #classify(java.lang.String)}</p>
@@ -61,7 +61,7 @@ package com.davidehrmann.classifier4j;
  * 
  * @author Nick Lothian
  */
-public class SimpleStringClassifier extends AbstractClassifier<String> implements IClassifier<String> {
+public class SimpleStringClassifier extends AbstractClassifier<String> implements Classifier<String> {
 
     private volatile String searchWord;
 
@@ -83,9 +83,6 @@ public class SimpleStringClassifier extends AbstractClassifier<String> implement
         searchWord = string;
     }
 
-    /**
-     * @see IClassifier#classify(java.lang.String)
-     */
     public double classify(String input) {
         if ((input != null) && (input.indexOf(searchWord) > 0)) {
             return 1;

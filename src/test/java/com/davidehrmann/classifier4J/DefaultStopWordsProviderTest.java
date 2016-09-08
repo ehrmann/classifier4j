@@ -58,7 +58,7 @@ import org.junit.Test;
 
 
 public class DefaultStopWordsProviderTest {
-	protected final IStopWordProvider<String> swp = new DefaultStopWordsProvider();
+	protected final StopWordProvider<String> swp = new DefaultStopWordsProvider();
 
 	@Test
 	public void testIsStopWord() {

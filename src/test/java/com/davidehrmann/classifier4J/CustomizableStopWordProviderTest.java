@@ -67,7 +67,7 @@ public class CustomizableStopWordProviderTest {
 	 */
 	@Test
 	public void testCustomizableStopWordProvider() throws IOException {
-		IStopWordProvider<String> swp = new CustomizableStopWordProvider();
+		StopWordProvider<String> swp = new CustomizableStopWordProvider();
 		assertNotNull(swp);
 		assertTrue(swp.isStopWord("a"));
 		assertTrue(swp.isStopWord("zero"));

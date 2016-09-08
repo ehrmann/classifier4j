@@ -4,14 +4,16 @@ package com.davidehrmann.classifier4j.vector;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
-public class VectorUtils {
+public final class VectorUtils {
+
+    private VectorUtils() {
+
+    }
+
     public static int scalarProduct(int[] one, int[] two) throws IllegalArgumentException {
-        if ((one == null) || (two == null)) {
-            throw new IllegalArgumentException("Arguments cannot be null");
-        }
-        
         if (one.length != two.length) {
             throw new IllegalArgumentException("Arguments of different length are not allowed");
         }
@@ -24,20 +26,11 @@ public class VectorUtils {
     }
     
     public static double scalarProduct(Collection<IntegerTuple> v) throws IllegalArgumentException {
-
-        int result = 0;
-        for (IntegerTuple it : v) {
-        	result += it.a * it.b;
-        }
-
-        return result;
+        return v.stream()
+                .collect(Collectors.summingDouble(t -> (double) t.a * t.b));
     }
     
     public static int scalarProduct(List<Integer> one, List<Integer> two) throws IllegalArgumentException {
-        if ((one == null) || (two == null)) {
-            throw new IllegalArgumentException("Arguments cannot be null");
-        }
-        
         if (one.size() != two.size()) {
             throw new IllegalArgumentException("Arguments of different length are not allowed");
         }
@@ -53,10 +46,6 @@ public class VectorUtils {
     }
     
     public static double vectorLength(int[] vector) throws IllegalArgumentException {
-        if (vector == null) {
-            throw new IllegalArgumentException("Arguments cannot be null");
-        }
-        
         double sumOfSquares = 0d;
         for (int i = 0; i < vector.length; i++) {
             sumOfSquares = sumOfSquares + (vector[i] * vector[i]);
@@ -66,10 +55,6 @@ public class VectorUtils {
     }
     
     public static double vectorLength(List<Integer> vector) throws IllegalArgumentException {
-        if (vector == null) {
-            throw new IllegalArgumentException("Arguments cannot be null");
-        }
-        
         double sumOfSquares = 0d;
         
         for (Integer value : vector) {
@@ -80,10 +65,6 @@ public class VectorUtils {
     }
     
     public static DoubleTuple vectorLength(Collection<IntegerTuple> vector) throws IllegalArgumentException {
-        if (vector == null) {
-            throw new IllegalArgumentException("Arguments cannot be null");
-        }
-        
         double sumOfSquaresA = 0d;
         double sumOfSquaresB = 0d;
         
@@ -98,34 +79,26 @@ public class VectorUtils {
     
     
     public static double cosineOfVectors(int[] one, int[] two) throws IllegalArgumentException {
-        if ((one == null) || (two == null)) {
-            throw new IllegalArgumentException("Arguments cannot be null");
-        }
-        
         if (one.length != two.length) {
             throw new IllegalArgumentException("Arguments of different length are not allowed");
         }     
-        double denominater = (vectorLength(one) * vectorLength(two));
-        if (denominater == 0) {
+        double denominator = (vectorLength(one) * vectorLength(two));
+        if (denominator == 0) {
             return 0;
         } else {
-            return (scalarProduct(one, two)/denominater);
+            return (scalarProduct(one, two)/denominator);
         }
     }
     
     public static double cosineOfVectors(List<Integer> one, List<Integer> two) throws IllegalArgumentException {
-        if ((one == null) || (two == null)) {
-            throw new IllegalArgumentException("Arguments cannot be null");
-        }
-        
         if (one.size() != two.size()) {
             throw new IllegalArgumentException("Arguments of different length are not allowed");
         }     
-        double denominater = (vectorLength(one) * vectorLength(two));
-        if (denominater == 0) {
+        double denominator = (vectorLength(one) * vectorLength(two));
+        if (denominator == 0) {
             return 0;
         } else {
-            return (scalarProduct(one, two)/denominater);
+            return (scalarProduct(one, two)/denominator);
         }
     }
     
@@ -133,11 +106,11 @@ public class VectorUtils {
 
     	DoubleTuple t = vectorLength(vectors);
     	
-        double denominater = t.a * t.b;
-        if (denominater == 0) {
+        double denominator = t.a * t.b;
+        if (denominator == 0) {
             return 0;
         } else {
-            return (scalarProduct(vectors) / denominater);
+            return (scalarProduct(vectors) / denominator);
         }
     }
     

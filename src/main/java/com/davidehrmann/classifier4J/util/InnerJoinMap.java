@@ -27,13 +27,7 @@
 
 package com.davidehrmann.classifier4j.util;
 
-import java.util.AbstractCollection;
-import java.util.AbstractMap;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class InnerJoinMap<K, LeftV, RightV, ResultV> extends AbstractMap<K, ResultV> {
 
@@ -115,8 +109,7 @@ public class InnerJoinMap<K, LeftV, RightV, ResultV> extends AbstractMap<K, Resu
 						this.bufferedEntry = null;
 						return temp;
 					} else {
-						// TODO: correct exception
-						throw new UnsupportedOperationException();
+						throw new NoSuchElementException();
 					}
 				}
 
@@ -176,8 +169,7 @@ public class InnerJoinMap<K, LeftV, RightV, ResultV> extends AbstractMap<K, Resu
 						this.hasBufferedResult = false;
 						return temp;
 					} else {
-						// TODO: correct exception
-						throw new UnsupportedOperationException();
+						throw new NoSuchElementException();
 					}
 				}
 

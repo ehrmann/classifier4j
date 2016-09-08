@@ -55,8 +55,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * 
- * Implementaion of the {@link IClassifier#setMatchCutoff(double)}
- * and {@link IClassifier#isMatch(java.lang.String)} methods.
+ * Implementaion of the {@link Classifier#setMatchCutoff(double)}
+ * and {@link Classifier#isMatch(java.lang.String)} methods.
  * 
  * @author Nick Lothian
  * @author David Ehrmann
@@ -64,7 +64,7 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public abstract class AbstractClassifier {
 
-    private final AtomicLong cutoff = new AtomicLong(Double.doubleToLongBits(IClassifier.DEFAULT_CUTOFF));
+    private final AtomicLong cutoff = new AtomicLong(Double.doubleToLongBits(Classifier.DEFAULT_CUTOFF));
 
     /**
      * 

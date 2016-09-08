@@ -48,45 +48,20 @@
  * SUCH DAMAGE.
  * ====================================================================
  */
-package com.davidehrmann.classifier4j.bayesian;
+
+package com.davidehrmann.classifier4j.tokenizer;
+
+import com.davidehrmann.classifier4j.ClassifierException;
 
 /**
- * Interface used by BayesianClassifier to determine the probability of each 
- * word based on a particular category.
- *
  * @author Nick Lothian
  * @author Peter Leschev
+ * @author David Ehrmann
  */
-public interface ICategorisedWordsDataSource<W,C> extends IWordsDataSource<W,C> {
-    /**
-     * @param category the category to check against
-     * @param word The word to calculate the probability of
-     * @return The word probability if the word exists, null otherwise;
-         *
-         * @throws WordsDataSourceException If there is a fatal problem. For 
-         *         example, the database is unavailable
-     */
-    public WordProbability<W,C> getWordProbability(C category, W word) throws WordsDataSourceException;
+public interface Trainable<C,I> {
+    void teachMatch(I input) throws ClassifierException;
+    void teachMatch(C category, I input) throws ClassifierException;
 
-    /**
-     * Add a matching word to the data source
-     * 
-     * @param category the category add the match to
-     * @param word the word that matches	 
-         *
-         * @throws WordsDataSourceException If there is a fatal problem. For 
-         *         example, the database is unavailable
-     */
-    public void addMatch(C category, W word) throws WordsDataSourceException;
-
-    /**
-     * Add a non-matching word to the data source
-     *
-     * @param category the category add the non-match to 
-     * @param word the word that does not match
-         *
-         * @throws WordsDataSourceException If there is a fatal problem. For 
-         *         example, the database is unavailable
-     */
-    public void addNonMatch(C category, W word) throws WordsDataSourceException;
+    void teachNonMatch(I input) throws ClassifierException;
+    void teachNonMatch(C category, I input) throws ClassifierException;
 }

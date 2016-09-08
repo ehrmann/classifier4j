@@ -98,7 +98,7 @@ public class SimpleSummariser implements ISummariser {
         while (it.hasNext()) {
             String word = (String) it.next();
             for (int i = 0; i < workingSentences.length; i++) {
-                if (workingSentences[i].indexOf(word) >= 0) {
+                if (workingSentences[i].contains(word)) {
                     outputSentences.add(actualSentences[i]);
                     break;
                 }

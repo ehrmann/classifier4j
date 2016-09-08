@@ -8,21 +8,21 @@ import java.util.Map;
 import java.util.Set;
 
 import com.davidehrmann.classifier4j.ClassifierException;
-import com.davidehrmann.classifier4j.tokenizer.ITokenizer;
-import com.davidehrmann.classifier4j.tokenizer.ITrainable;
-import com.davidehrmann.classifier4j.IStopWordProvider;
+import com.davidehrmann.classifier4j.tokenizer.Tokenizer;
+import com.davidehrmann.classifier4j.tokenizer.Trainable;
+import com.davidehrmann.classifier4j.StopWordProvider;
 import com.davidehrmann.classifier4j.Utilities;
 
 
-public class VectorTrainee<C,I> implements ITrainable<C,I> {
+public class VectorTrainee<C,I> implements Trainable<C,I> {
 
     private final int numTermsInVector = 50;
     
-    private final ITokenizer<I> tokenizer;
-    private final IStopWordProvider<I> stopWordsProvider;
+    private final Tokenizer<I> tokenizer;
+    private final StopWordProvider<I> stopWordsProvider;
     private final TermVectorStorage<C,I> storage;    
         
-    public VectorTrainee(TermVectorStorage<C,I> storage, ITokenizer<I> tokenizer, IStopWordProvider<I> stopWordsProvider) {
+    public VectorTrainee(TermVectorStorage<C,I> storage, Tokenizer<I> tokenizer, StopWordProvider<I> stopWordsProvider) {
         this.tokenizer = tokenizer;
         this.stopWordsProvider = stopWordsProvider;
         this.storage = storage;
@@ -31,7 +31,7 @@ public class VectorTrainee<C,I> implements ITrainable<C,I> {
     }   
 
     /**
-     * @see ITrainable#teachMatch(java.lang.String, java.lang.String)
+     * @see Trainable#teachMatch(java.lang.String, java.lang.String)
      */
     public void teachMatch(C category, I input) throws ClassifierException {
         // Create a map of the word frequency from the input
@@ -50,7 +50,7 @@ public class VectorTrainee<C,I> implements ITrainable<C,I> {
     }
     
     /**
-     * @see ITrainable#teachNonMatch(java.lang.String, java.lang.String)
+     * @see Trainable#teachNonMatch(java.lang.String, java.lang.String)
      */
     public void teachNonMatch(C category, I input) throws ClassifierException {
         return; // this is not required for the VectorClassifier        
